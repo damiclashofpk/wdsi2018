@@ -99,11 +99,10 @@ print len(attributes)
 #  Main Part
 ##
 
-# Ostatnich dwócg wartości nie normalizujemy, a ostatnią mozna odrzucić
+# Ostatnich dwóch wartości nie normalizujemy, a ostatnią mozna odrzucić
 # 
-# pomieszać kolejność tablicy attributes
-# 
-# wydzielić z nich 5 podzbiorów
+# * Trzeba pomieszać kolejność tablicy attributes
+# * Trzeba wydzielić z niej 5 podzbiorów
 # 
 # SVM -libSVM 
 # wybrać nu-SVR - typ regresji
