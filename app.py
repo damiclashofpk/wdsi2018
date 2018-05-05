@@ -32,6 +32,14 @@ file = csv.reader(open('data.dat', 'rb'), delimiter=',')
 
 # pip install --user numpy scipy matplotlib ipython jupyter pandas sympy nose
 
+def issetOption(opt):
+    return sys.argv.count(opt)
+
+def getOption(opt, default = None):
+    if issetOption(opt):
+        return sys.argv[sys.argv.index(opt)+1]
+    return default
+    
 def generateColumnsMatrix(columnsCount):
     columns = [];
     for i in range(columnsCount):
@@ -106,42 +114,70 @@ def loadDataFromOpenedFile():
     classes = columns[5:6][0]
 
 def main():
+    print '\n\n\n\n\n\n\n\n\n\n'
+    print 'count of records: ', len(attributes)
     # filtered data
 
     for key, line in enumerate(attributes):
         # print line
         pass
 
-    print '\n\n\n\n\n\n\n\n\n\n'
-    print 'count of records: ', len(attributes)
-
+    # get gamma
+    gamma = float(getOption('-gamma', 0.3))
 
     ##
     #  Main Part
     ##
+    def learnAndTest(firstTestIndex, lastTestIndex):
+        la = len(attributes)
 
-    # idx = 20% of all attributes
-    idx80 = int(0.8*len(attributes))
+        learn_classes = classes[0:firstTestIndex] + classes[lastTestIndex:la]
+        learn_attributes = attributes[0:firstTestIndex] + attributes[lastTestIndex:la]
 
-    param=svm_parameter("-q")
-    param.svm_type = NU_SVR
-    param.kernel_type = RBF
-    param.gamma = 0.3
-    if sys.argv.count('-gamma'):
-        param.gamma = float(sys.argv[sys.argv.index('-gamma')+1])
+        test_classes = classes[firstTestIndex:lastTestIndex]
+        test_attributes = attributes[firstTestIndex:lastTestIndex]
+
+        param=svm_parameter("-q")
+        param.svm_type = NU_SVR
+        param.kernel_type = RBF
+        param.gamma = gamma
+        
+        # param.cross_validation=1
+        param.nr_fold=10
+
+        problem = svm_problem(learn_classes, learn_attributes)
+        # param = svm_parameter(kernel_type = RBF, C = 10)
+
+        model = svm_train(problem, param)
+
+        # testing
+
+        print '\n\nGamma: ', gamma
+        p_lbl, p_acc, p_prob = svm_predict(test_classes, test_attributes, model)
+        
+        # verbose
+        if issetOption('-v'):
+            print p_lbl     
+
+        print p_acc
+        # verbose
+        if issetOption('-v'):
+            print p_prob
+        
+        
+
+    inter = int(0.2*len(attributes))
+
+    for el in range(4):
+        learnAndTest(el * inter, (el+1)*inter);
+
+    learnAndTest(4*inter, len(attributes));
     
-    # param.cross_validation=1
-    param.nr_fold=10
 
-    problem = svm_problem(classes[:idx80], attributes[:idx80])
-    # param = svm_parameter(kernel_type = RBF, C = 10)
 
-    model = svm_train(problem, param)
+    
 
-    # testing
-
-    p_lbl, p_acc, p_prob = svm_predict(classes[idx80:], attributes[idx80:], model)
-    print p_acc
+    
 
 
     # we are creating our intelligence model

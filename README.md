@@ -45,3 +45,15 @@ Program realizuje funkcję regresji. Zgodnie z założeniami projektowymi typ j�
 ```
 python app.py -i shuffled.data -gamma 0.1
 ```
+
+Na początku programu możemy otrzymywać warning o treści:
+```
+RuntimeWarning: The _posixsubprocess module is not being used. Child process reliability may suffer if your program uses threads.
+  "program uses threads.", RuntimeWarning)
+```
+
+Aby ten komunikat nas nie denerwował, można wykonać skrypt pythona z opcją ignorowania ostrzeżeń '-W ignore':
+
+```
+python -W ignore app.py -i shuffled.data -gamma 0.01
+```
