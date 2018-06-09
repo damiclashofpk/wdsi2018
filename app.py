@@ -1,6 +1,7 @@
 import os
 import sys
 import csv
+import math
 sys.path.append(os.path.abspath("./libsvm/python"))
 # print(sys.path)
 from svm import *
@@ -113,21 +114,24 @@ def loadDataFromOpenedFile():
 
     classes = columns[5:6][0]
 
-def main():
+def runWithParams(nu = None, gamma = None, compact = 0, withTest = 0):
+    print classes
+    print max(classes)
+    print min(classes)
     print '\n\n\n\n\n\n\n\n\n\n'
     print 'count of records: ', len(attributes)
-    # filtered data
-
-    for key, line in enumerate(attributes):
-        # print line
-        pass
-
-    # get gamma
-    gamma = float(getOption('-gamma', 0.3))
 
     ##
     #  Main Part
     ##
+    def rateAndDraw(inputSet, outputSet, label = 'diff1'):
+        diff = []
+        for idx, el in enumerate(inputSet):
+            err = math.fabs(inputSet[idx] - outputSet[idx][0])
+            diff.append(err)
+
+        plt.plot(range(len(inputSet)), diff)
+
     def learnAndTest(firstTestIndex, lastTestIndex):
         la = len(attributes)
 
@@ -140,8 +144,13 @@ def main():
         param=svm_parameter("-q")
         param.svm_type = NU_SVR
         param.kernel_type = RBF
-        param.gamma = gamma
+
+        if(gamma != None):
+            param.gamma = gamma
         
+        if(nu != None):
+            param.nu = nu
+
         # param.cross_validation=1
         param.nr_fold=10
 
@@ -152,33 +161,50 @@ def main():
 
         # testing
 
-        print '\n\nGamma: ', gamma
-        p_lbl, p_acc, p_prob = svm_predict(test_classes, test_attributes, model)
+        print '\n\nGamma: ', param.gamma
+        print '\nNu: ', param.nu
+
+        p_lbl, p_acc, p_prob = svm_predict(learn_classes, learn_attributes, model)
         
         # verbose
-        if issetOption('-v'):
-            print p_lbl     
+        # if issetOption('-v'):
+            # print p_lbl     
 
         print p_acc
         # verbose
         if issetOption('-v'):
-            print p_prob
-        
+            rateAndDraw(learn_classes, p_prob)
+            if not compact:
+                print learn_classes
+                print p_prob
+
+        if withTest:
+
+            p_lbl, p_acc, p_prob = svm_predict(test_classes, test_attributes, model)
+            
+            # verbose
+            # if issetOption('-v'):
+                # print p_lbl     
+
+            print p_acc
+            # verbose
+            if issetOption('-v') and not compact:
+                print test_classes
+                print p_prob
+            
         
 
     inter = int(0.2*len(attributes))
 
+
+    plt.figure()
+    
     for el in range(4):
         learnAndTest(el * inter, (el+1)*inter);
 
     learnAndTest(4*inter, len(attributes));
     
-
-
-    
-
-    
-
+    plt.show()
 
     # we are creating our intelligence model
 
@@ -196,7 +222,28 @@ def main():
     # typ funkcji jadra RBF - optymalizowac parametr gamma
     # 
     # 
-    # end of main()
+    # end of runWithParams()    
+
+def main():
+    gamma = None
+    if(issetOption('-gamma')):
+        gamma = float(getOption('-gamma'))
+
+    nu = None
+    if(issetOption('-nu')):
+        nu = float(getOption('-nu'))
+
+    runWithParams(nu, gamma, 1)
+
+    nuValues = [0.5, 0.4, 0.3, 0.2, 0.1, 0.08, 0.05, 0.03, 0.01, 0.008]
+    gammaValues = [0.8, 0.6, 0.4, 0.2, 0.1, 0.08, 0.06, 0.04, 0.02, 0.01]
+
+    # nuValues = [0.5, 0.008]
+    # gammaValues = [0.8, 0.01]
+
+    for nuV in nuValues:
+        for gammaV in gammaValues:
+            runWithParams(nuV, gammaV, 1)
 
 # SETTINGS
 global COLUMNS_COUNT, headers, attributes, columns, columnsNormalizationParams, lines, classes
