@@ -1,6 +1,7 @@
 # Projekt zaliczeniowy z wdsi2018
 
-Celem projektu jest stworzenie programu uczącego się na podstawie danych wejściowych. Danymi wejściowymi są parametry komputerów i ich zmierzona eksperymentalnie wydajność.
+Celem projektu jest stworzenie programu uczącego się na podstawie danych wejściowych. Danymi wejściowymi są parametry komputerów i ich zmierzona eksperymentalnie wydajność. 
+Nasza prezentacja jest w pliku `Prezentacja.pptx`, a dokumentacja jest jednocześnie sposobem użycia programu. 
 
 ### Konsultacje z dnia 21.04.2018
 
@@ -90,5 +91,5 @@ Do projektu został dodany katalog plots zawierający serię wykresów,
 które obrazują jak zmienia się wartość błędu względnego i bezwzględnego dla
 zadanych wartości gamma i nu. Program został uruchomiony z parametrami:
 ```
-python -W ignore app.py -i shuffled.data -v -plot by_nu  
+python -W ignore app.py -i shuffled.data -v -plot by_nu
 ```
