@@ -57,3 +57,38 @@ Aby ten komunikat nas nie denerwował, można wykonać skrypt pythona z opcją i
 ```
 python -W ignore app.py -i shuffled.data -gamma 0.01
 ```
+
+### Alternatywny algorytm epsilon-SVR
+
+W programie można użyć metody epsilon-SVR . W tym celu należy przekazać do programu parametr:
+
+```
+python -W ignore app.py -i shuffled.data -algo eps
+```
+
+Przy wykorzystaniu tej metody do parametru epsilon przyporządkowywane są wartości które domyślnie przypisywane są do parametru nu.
+
+### Rysowanie wykresów
+
+Aby narysować wykresy należy podać typ wykresu w parametrze plot:
+
+```
+python -W ignore app.py -i shuffled.data -plot TYPE 
+```
+
+Parametr TYPE przyjmuje wartości: rel, abs, by_nu
+
+Oznaczają one:
+- rel - wykres błędu względnego,
+- abs - wykres błędu bezwzględnego,
+- by_nu - wykres wartości średnich błędów zależnych od nu / eps, przy stałym 
+
+
+### Wykresy
+
+Do projektu został dodany katalog plots zawierający serię wykresów, 
+które obrazują jak zmienia się wartość błędu względnego i bezwzględnego dla
+zadanych wartości gamma i nu. Program został uruchomiony z parametrami:
+```
+python -W ignore app.py -i shuffled.data -v -plot by_nu  
+```
